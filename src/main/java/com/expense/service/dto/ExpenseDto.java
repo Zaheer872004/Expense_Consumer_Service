@@ -1,47 +1,49 @@
 package com.expense.service.dto;
 
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.NonNull;
+import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@Getter
+@Setter
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ExpenseDto {
+public class ExpenseDto
+{
 
     private String externalId;
 
-    @JsonProperty(value="user_id")
+    @JsonProperty(value = "amount")
+    @NonNull
+    private BigDecimal amount;
+
+    @JsonProperty(value = "user_id")
     private String userId;
 
-
-    @JsonProperty(value="amount")
-    private String amount;
-
-    @JsonProperty(value="merchant")
+    @JsonProperty(value = "merchant")
     private String merchant;
 
-    @JsonProperty(value="currency")
+    @JsonProperty(value = "currency")
     private String currency;
 
-    @JsonProperty(value="created_at")
+    @JsonProperty(value = "created_at")
     private Timestamp createdAt;
-
-    @JsonProperty(value="updated_at")
-    private Timestamp updatedAt;
 
     public ExpenseDto(String json) {
         try {
@@ -54,7 +56,6 @@ public class ExpenseDto {
             this.merchant = expense.merchant;
             this.currency = expense.currency;
             this.createdAt = expense.createdAt;
-            this.updatedAt = expense.updatedAt;
         } catch (Exception e) {
             throw new RuntimeException("Failed to deserialize ExpenseDto from JSON", e);
         }

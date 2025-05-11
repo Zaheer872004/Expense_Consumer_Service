@@ -1,30 +1,41 @@
-package com.expense.service.entity;
-
+package com.expense.service.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.UUID;
 
+@Entity
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity
-public class Expense {
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public class Expense
+{
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long  Id;
+    private Long id;
 
     @Column(name = "external_id")
     private String externalId;
@@ -33,7 +44,7 @@ public class Expense {
     private String userId;
 
     @Column(name = "amount")
-    private String amount;
+    private BigDecimal amount;
 
     @Column(name = "merchant")
     private String merchant;
@@ -41,44 +52,18 @@ public class Expense {
     @Column(name = "currency")
     private String currency;
 
-    @Column(name = "created_at")
-    private String createdAt;
+    @JsonProperty(value = "created_at")
+    private Timestamp createdAt;
 
-    @Column(name = "updated_at")
-    private String updatedAt;
-
-
-    // Define a formatter for your timestamps
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-    // This method is called once before the entity is persisted.
     @PrePersist
-    public void prePersist() {
-        LocalDateTime now = LocalDateTime.now();
-        this.createdAt = now.format(FORMATTER);
-        this.updatedAt = now.format(FORMATTER);
-
-        // Generate the externalId if it's not already set
+    @PreUpdate
+    private void generateExternalId() {
         if (this.externalId == null) {
             this.externalId = UUID.randomUUID().toString();
         }
+        if (this.createdAt == null) {
+            this.createdAt = new Timestamp(Instant.now().toEpochMilli());
+        }
     }
-
-    // This method is called each time the entity is updated.
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now().format(FORMATTER);
-    }
-
-
-//    @PrePersist
-//    @PreUpdate
-//    private void generateExternalId() {
-//        if(this.externalId == null) {
-//            this.externalId = UUID.randomUUID().toString();
-//        }
-//    }
-
-
 
 }

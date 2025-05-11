@@ -23,7 +23,7 @@ public class ExpenseConsumer {
     public void consume(ExpenseDto expenseDto) {
 
         try {
-
+            System.out.println("Consumed JSON Message: " + expenseDto);
             expenseService.createExpense(expenseDto);
         } catch (Exception e) {
             e.printStackTrace();
