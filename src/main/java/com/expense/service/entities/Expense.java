@@ -52,6 +52,9 @@ public class Expense
     @Column(name = "currency")
     private String currency;
 
+    @Column(name = "transaction_type")
+    private String transactionType;
+
     @JsonProperty(value = "created_at")
     private Timestamp createdAt;
 
@@ -63,6 +66,12 @@ public class Expense
         }
         if (this.createdAt == null) {
             this.createdAt = new Timestamp(Instant.now().toEpochMilli());
+        }
+        if (this.merchant != null) {
+            this.merchant = this.merchant.toLowerCase();
+        }
+        if (this.transactionType != null){
+            this.transactionType = this.transactionType.toLowerCase();
         }
     }
 

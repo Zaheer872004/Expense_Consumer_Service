@@ -42,6 +42,9 @@ public class ExpenseDto
     @JsonProperty(value = "currency")
     private String currency;
 
+    @JsonProperty(value = "transaction_type")
+    private String transactionType;
+
     @JsonProperty(value = "created_at")
     private Timestamp createdAt;
 
@@ -55,6 +58,7 @@ public class ExpenseDto
             this.userId = expense.userId;
             this.merchant = expense.merchant;
             this.currency = expense.currency;
+            this.transactionType = expense.transactionType;
             this.createdAt = expense.createdAt;
         } catch (Exception e) {
             throw new RuntimeException("Failed to deserialize ExpenseDto from JSON", e);

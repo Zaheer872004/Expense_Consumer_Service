@@ -10,6 +10,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,10 +58,27 @@ public class ExpenseService
         return objectMapper.convertValue(expenseOpt, new TypeReference<List<ExpenseDto>>() {});
     }
 
+
+
     private void setCurrency(ExpenseDto expenseDto){
         if(Objects.isNull(expenseDto.getCurrency())){
             expenseDto.setCurrency("inr");
         }
+    }
+
+    public List<ExpenseDto> getExpensesByUserAndTypeAndDateRange(String userId, String transactionType, LocalDateTime startTime, LocalDateTime endTime) {
+        List<Expense> expenses = expenseRepository.findByUserIdAndTransactionTypeAndCreatedAtBetween(userId, transactionType, startTime, endTime);
+        return objectMapper.convertValue(expenses, new TypeReference<List<ExpenseDto>>() {});
+    }
+
+    public List<ExpenseDto> getExpensesByUserAndMerchantAndDateRange(String userId, String merchant, LocalDateTime startTime, LocalDateTime endTime) {
+        List<Expense> expenses = expenseRepository.findByUserIdAndMerchantAndCreatedAtBetween(userId, merchant, startTime, endTime);
+        return objectMapper.convertValue(expenses, new TypeReference<List<ExpenseDto>>() {});
+    }
+
+    public List<ExpenseDto> getExpenseByUserAndMerchant(String userId, String merchant) {
+        List<Expense> expenses = expenseRepository.findByUserIdAndMerchant(userId,merchant);
+        return objectMapper.convertValue(expenses, new TypeReference<List<ExpenseDto>>() {});
     }
 
 
